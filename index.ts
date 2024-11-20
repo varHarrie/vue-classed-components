@@ -5,6 +5,7 @@ import {
 } from "class-variance-authority/types";
 import {
   defineComponent,
+  getCurrentInstance,
   h,
   type DefineSetupFnComponent,
   type FunctionalComponent,
@@ -66,6 +67,15 @@ type Classed = {
   ) => ClassedComponent<K, VueComponentProps<K> & CVAProps<V>>;
 };
 
+function useForwardRef() {
+  const instance = getCurrentInstance()!;
+
+  return (value: any) => {
+    instance.exposed = value;
+    instance.exposeProxy = value;
+  };
+}
+
 function create(
   element: ElementType,
   baseClass: ClassValue,
@@ -75,8 +85,14 @@ function create(
 
   return defineComponent(
     (props, { attrs, slots }) => {
+      const rootRef = useForwardRef();
+
       return () =>
-        h(element, { ...attrs, class: cva(baseClass, config)(props) }, slots);
+        h(
+          element,
+          { ref: rootRef, ...attrs, class: cva(baseClass, config)(props) },
+          slots,
+        );
     },
     {
       props: ["class", ...variants],

@@ -1,6 +1,6 @@
 {
   "name": "vue-classed-components",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "A utility library for Vue 3 that helps you create type-safe components with class variations.",
   "main": "./dist/index.umd.cjs",
